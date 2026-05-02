@@ -49,11 +49,11 @@ graph TD
         J -- Unauthorized --> L[Access Denied]
     end
 
-    style A fill:#E3F2FD,stroke:#1565C0,stroke-width:2px
-    style C fill:#FFF8E1,stroke:#9A6830,stroke-width:2px
-    style G fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px
-    style K fill:#F3E5F5,stroke:#7B1FA2,stroke-width:2px
-    style L fill:#FFEBEE,stroke:#C62828,stroke-width:2px
+    style A fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#1565C0
+    style C fill:#FFF8E1,stroke:#9A6830,stroke-width:2px,color:#9A6830
+    style G fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#2E7D32
+    style K fill:#F3E5F5,stroke:#7B1FA2,stroke-width:2px,color:#7B1FA2
+    style L fill:#FFEBEE,stroke:#C62828,stroke-width:2px,color:#C62828
 ```
 
 ## 📁 Project Structure
