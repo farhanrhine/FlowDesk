@@ -99,16 +99,16 @@
                         <td style="padding: 1rem; font-size: 0.9rem;">
                             {% if task.assigned_to %}
                                 {% if is_mine %}
-                                    <span class="badge" style="background-color: var(--info-light); color: var(--info); border: 1px solid var(--info);">
+                                    <span class="badge" style="background-color: var(--info-light); color: var(--info); border: 1px solid var(--info); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">
                                         {{ task.assignee.username }}
                                     </span>
                                 {% else %}
-                                    <span class="badge" style="background-color: var(--paper); color: var(--ink-soft); border: 1px solid var(--border);">
+                                    <span class="badge" style="background-color: var(--paper-warm); color: var(--ink-muted); border: 1px solid var(--border-soft); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">
                                         {{ task.assignee.username }}
                                     </span>
                                 {% endif %}
                             {% else %}
-                                <span class="badge" style="background-color: transparent; color: var(--ink-faint); border: 1px dashed var(--border);">
+                                <span class="badge" style="background-color: transparent; color: var(--ink-faint); border: 1px dashed var(--border); text-transform: uppercase; font-size: 0.7rem;">
                                     Unassigned
                                 </span>
                             {% endif %}
