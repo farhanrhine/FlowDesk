@@ -97,9 +97,21 @@
                         </td>
                         <td style="padding: 1rem; font-size: 0.9rem;">{{ task.project.name }}</td>
                         <td style="padding: 1rem; font-size: 0.9rem;">
-                            <span style="font-weight: 500; color: {% if is_mine %}var(--info){% else %}var(--ink){% endif %};">
-                                {{ task.assignee.username if task.assigned_to else 'Unassigned' }}
-                            </span>
+                            {% if task.assigned_to %}
+                                {% if is_mine %}
+                                    <span class="badge" style="background-color: var(--info-light); color: var(--info); border: 1px solid var(--info);">
+                                        {{ task.assignee.username }}
+                                    </span>
+                                {% else %}
+                                    <span class="badge" style="background-color: var(--paper); color: var(--ink-soft); border: 1px solid var(--border);">
+                                        {{ task.assignee.username }}
+                                    </span>
+                                {% endif %}
+                            {% else %}
+                                <span class="badge" style="background-color: transparent; color: var(--ink-faint); border: 1px dashed var(--border);">
+                                    Unassigned
+                                </span>
+                            {% endif %}
                         </td>
                         <td style="padding: 1rem;">
                             <span class="badge badge-{{ task.priority }}">{{ task.priority }}</span>
