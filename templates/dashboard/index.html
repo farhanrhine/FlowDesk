@@ -3,154 +3,112 @@
 {% block title %}Dashboard - FlowDesk{% endblock %}
 
 {% block content %}
-<div class="mb-4">
+<header class="mb-4">
     <h1>Welcome, {{ current_user.username }}</h1>
-    <p class="text-muted">Here's an overview of your work today.</p>
-</div>
+    <p class="text-muted">Here is an overview of your work today.</p>
+</header>
 
 <!-- Summary Cards -->
-<div class="row mb-4">
-    <div class="col-md-4">
-        <div class="card bg-primary text-white shadow-sm">
-            <div class="card-body text-center">
-                <h5 class="card-title">Due Today</h5>
-                <p class="display-4">{{ tasks_today|length }}</p>
-            </div>
-        </div>
+<section class="grid-3 mb-4" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+    <div class="card card-shadow" style="background-color: var(--paper-warm); border-left: 4px solid var(--info);">
+        <h5 class="text-muted" style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Due Today</h5>
+        <p style="font-size: 3rem; font-family: var(--font-display);">{{ tasks_today|length }}</p>
     </div>
-    <div class="col-md-4">
-        <div class="card bg-info text-white shadow-sm">
-            <div class="card-body text-center">
-                <h5 class="card-title">In Progress</h5>
-                <p class="display-4">{{ in_progress_count }}</p>
-            </div>
-        </div>
+    <div class="card card-shadow" style="background-color: var(--paper-warm); border-left: 4px solid var(--accent);">
+        <h5 class="text-muted" style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">In Progress</h5>
+        <p style="font-size: 3rem; font-family: var(--font-display);">{{ in_progress_count }}</p>
     </div>
-    <div class="col-md-4">
-        <div class="card bg-danger text-white shadow-sm">
-            <div class="card-body text-center">
-                <h5 class="card-title">Overdue</h5>
-                <p class="display-4">{{ overdue_tasks|length }}</p>
-            </div>
-        </div>
+    <div class="card card-shadow" style="background-color: var(--paper-warm); border-left: 4px solid var(--danger);">
+        <h5 class="text-muted" style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em;">Overdue</h5>
+        <p style="font-size: 3rem; font-family: var(--font-display);">{{ overdue_tasks|length }}</p>
     </div>
-</div>
+</section>
 
-<div class="row">
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem;">
     <!-- Immediate Attention -->
-    <div class="col-md-6 mb-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-header bg-transparent">
-                <h5 class="mb-0">Due Today</h5>
-            </div>
-            <div class="list-group list-group-flush">
-                {% for task in tasks_today %}
-                    <a href="{{ url_for('tasks.detail', id=task.id) }}" class="list-group-item list-group-item-action">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h6 class="mb-1">{{ task.title }}</h6>
-                            <small class="text-muted">{{ task.project.name }}</small>
-                        </div>
-                        <span class="badge bg-{{ 'danger' if task.priority == 'high' else 'warning' if task.priority == 'medium' else 'info' }} btn-sm">
-                            {{ task.priority|upper }}
-                        </span>
-                    </a>
-                {% else %}
-                    <div class="list-group-item text-center text-muted py-4">
-                        No tasks due today.
+    <div class="card">
+        <h3 class="mb-4">Due Today</h3>
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            {% for task in tasks_today %}
+                <a href="{{ url_for('tasks.detail', id=task.id) }}" class="flex-between" style="padding: 1rem; border: 1px solid var(--border-soft); border-radius: var(--radius-sm);">
+                    <div>
+                        <h6 style="font-weight: 600;">{{ task.title }}</h6>
+                        <small class="text-muted">{{ task.project.name }}</small>
                     </div>
-                {% endfor %}
-            </div>
+                    <span class="badge badge-{{ task.priority }}">{{ task.priority }}</span>
+                </a>
+            {% else %}
+                <p class="text-muted" style="text-align: center; padding: 2rem;">No tasks due today.</p>
+            {% endfor %}
         </div>
     </div>
 
     <!-- Overdue Tasks -->
-    <div class="col-md-6 mb-4">
-        <div class="card h-100 shadow-sm border-danger">
-            <div class="card-header bg-danger text-white">
-                <h5 class="mb-0">Overdue</h5>
-            </div>
-            <div class="list-group list-group-flush">
-                {% for task in overdue_tasks %}
-                    <a href="{{ url_for('tasks.detail', id=task.id) }}" class="list-group-item list-group-item-action">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h6 class="mb-1 text-danger">{{ task.title }}</h6>
-                            <small class="text-muted">{{ task.project.name }}</small>
-                        </div>
-                        <small class="text-danger">Due: {{ task.due_date.strftime('%Y-%m-%d') }}</small>
-                    </a>
-                {% else %}
-                    <div class="list-group-item text-center text-muted py-4">
-                        No overdue tasks. Great job!
+    <div class="card" style="border-color: var(--danger-light);">
+        <h3 class="mb-4" style="color: var(--danger);">Overdue</h3>
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            {% for task in overdue_tasks %}
+                <a href="{{ url_for('tasks.detail', id=task.id) }}" class="flex-between overdue-row" style="padding: 1rem; border-radius: var(--radius-sm);">
+                    <div>
+                        <h6 style="font-weight: 600;">{{ task.title }}</h6>
+                        <small style="opacity: 0.8;">{{ task.project.name }}</small>
                     </div>
-                {% endfor %}
-            </div>
+                    <span style="font-weight: 600; font-size: 0.8rem;">{{ task.due_date.strftime('%b %d') }}</span>
+                </a>
+            {% else %}
+                <p class="text-muted" style="text-align: center; padding: 2rem;">No overdue tasks. Great job!</p>
+            {% endfor %}
         </div>
     </div>
 </div>
 
-<!-- All My Tasks -->
-<div class="card shadow-sm mb-4">
-    <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">All My Tasks</h5>
-        <div class="btn-group btn-group-sm">
-            <button type="button" class="btn btn-outline-secondary" onclick="filterTasks('all')">All</button>
-            <button type="button" class="btn btn-outline-secondary" onclick="filterTasks('todo')">To Do</button>
-            <button type="button" class="btn btn-outline-secondary" onclick="filterTasks('in_progress')">In Progress</button>
-            <button type="button" class="btn btn-outline-secondary" onclick="filterTasks('done')">Done</button>
+<!-- All My Tasks Table -->
+<div class="card">
+    <div class="flex-between mb-4">
+        <h3>All My Tasks</h3>
+        <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-ghost filter-btn active" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="filterTasks('all')">All</button>
+            <button class="btn btn-ghost filter-btn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="filterTasks('todo')">To Do</button>
+            <button class="btn btn-ghost filter-btn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="filterTasks('in_progress')">In Progress</button>
+            <button class="btn btn-ghost filter-btn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="filterTasks('done')">Done</button>
         </div>
     </div>
-    <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0" id="tasksTable">
-            <thead class="table-light">
-                <tr>
-                    <th>Title</th>
-                    <th>Project</th>
-                    <th>Priority</th>
-                    <th>Due Date</th>
-                    <th>Status</th>
+    
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+                <tr style="border-bottom: 1px solid var(--border); color: var(--ink-muted); font-size: 0.85rem;">
+                    <th style="padding: 1rem;">Title</th>
+                    <th style="padding: 1rem;">Project</th>
+                    <th style="padding: 1rem;">Priority</th>
+                    <th style="padding: 1rem;">Due Date</th>
+                    <th style="padding: 1rem;">Status</th>
                 </tr>
             </thead>
             <tbody>
                 {% for task in all_my_tasks %}
-                    <tr class="task-row" data-status="{{ task.status }}">
-                        <td>
-                            <a href="{{ url_for('tasks.detail', id=task.id) }}" class="text-decoration-none text-dark fw-bold">
+                    <tr class="task-row" data-status="{{ task.status }}" style="border-bottom: 1px solid var(--border-soft);">
+                        <td style="padding: 1rem;">
+                            <a href="{{ url_for('tasks.detail', id=task.id) }}" style="color: var(--ink); font-weight: 600;">
                                 {{ task.title }}
                             </a>
                         </td>
-                        <td>{{ task.project.name }}</td>
-                        <td>
-                            <span class="badge bg-{{ 'danger' if task.priority == 'high' else 'warning' if task.priority == 'medium' else 'info' }}">
-                                {{ task.priority|capitalize }}
-                            </span>
+                        <td style="padding: 1rem; font-size: 0.9rem;">{{ task.project.name }}</td>
+                        <td style="padding: 1rem;">
+                            <span class="badge badge-{{ task.priority }}">{{ task.priority }}</span>
                         </td>
-                        <td>{{ task.due_date.strftime('%Y-%m-%d') if task.due_date else '-' }}</td>
-                        <td>
-                            <span class="badge bg-{{ 'success' if task.status == 'done' else 'primary' if task.status == 'in_progress' else 'secondary' }}">
-                                {{ task.status|replace('_', ' ')|capitalize }}
-                            </span>
+                        <td style="padding: 1rem; font-size: 0.9rem;">{{ task.due_date.strftime('%Y-%m-%d') if task.due_date else '-' }}</td>
+                        <td style="padding: 1rem;">
+                            <span class="badge badge-{{ task.status }}">{{ task.status|replace('_', ' ') }}</span>
                         </td>
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="5" class="text-center text-muted py-4">You have no tasks assigned.</td>
+                        <td colspan="5" style="text-align: center; padding: 3rem; color: var(--ink-faint);">You have no tasks assigned.</td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
-
-<script>
-function filterTasks(status) {
-    const rows = document.querySelectorAll('.task-row');
-    rows.forEach(row => {
-        if (status === 'all' || row.dataset.status === status) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
-        }
-    });
-}
-</script>
 {% endblock %}

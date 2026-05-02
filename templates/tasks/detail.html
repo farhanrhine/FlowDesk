@@ -3,94 +3,72 @@
 {% block title %}{{ task.title }} - FlowDesk{% endblock %}
 
 {% block content %}
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{ url_for('projects.list_projects') }}">Projects</a></li>
-    <li class="breadcrumb-item"><a href="{{ url_for('projects.detail', id=task.project.id) }}">{{ task.project.name }}</a></li>
-    <li class="breadcrumb-item active" aria-current="page">{{ task.title }}</li>
-  </ol>
-</nav>
+<header class="mb-4">
+    <nav style="font-size: 0.85rem; margin-bottom: 0.5rem;">
+        <a href="{{ url_for('projects.list_projects') }}" class="text-muted">Projects</a> / 
+        <a href="{{ url_for('projects.detail', id=task.project.id) }}" class="text-muted">{{ task.project.name }}</a> / 
+        {{ task.title }}
+    </nav>
+</header>
 
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card mb-4">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start mb-3">
-                    <div>
-                        <span class="badge bg-{{ 'danger' if task.priority == 'high' else 'warning' if task.priority == 'medium' else 'info' }} mb-2">
-                            {{ task.priority|upper }}
-                        </span>
-                        <span class="badge bg-{{ 'success' if task.status == 'done' else 'primary' if task.status == 'in_progress' else 'secondary' }} mb-2 ms-2" id="statusBadge">
-                            {{ task.status|replace('_', ' ')|upper }}
-                        </span>
-                        <h1>{{ task.title }}</h1>
-                    </div>
-                    {% if role == 'admin' or task.created_by == current_user.id %}
-                        <div>
-                            <a href="{{ url_for('tasks.edit', id=task.id) }}" class="btn btn-outline-secondary btn-sm">Edit</a>
-                            {% if role == 'admin' %}
-                                <form action="{{ url_for('tasks.delete', id=task.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this task?')">
-                                    <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
-                                </form>
-                            {% endif %}
-                        </div>
+<div style="max-width: 800px; margin: 0 auto;">
+    <div class="card card-shadow">
+        <div class="flex-between mb-4">
+            <div style="display: flex; gap: 0.75rem; align-items: center;">
+                <span class="badge badge-{{ task.priority }}">{{ task.priority }}</span>
+                <span class="badge badge-{{ task.status }}">{{ task.status|replace('_', ' ') }}</span>
+            </div>
+            {% if role == 'admin' or task.created_by == current_user.id %}
+                <div style="display: flex; gap: 0.5rem;">
+                    <a href="{{ url_for('tasks.edit', id=task.id) }}" class="btn btn-ghost" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">Edit</a>
+                    {% if role == 'admin' %}
+                        <form action="{{ url_for('tasks.delete', id=task.id) }}" method="POST" onsubmit="return confirm('Delete this task?')">
+                            <button type="submit" class="btn btn-ghost" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; color: var(--danger); border-color: var(--danger-light);">Delete</button>
+                        </form>
                     {% endif %}
                 </div>
-                
-                <p class="lead">{{ task.description or 'No description provided.' }}</p>
-                <hr>
-                
-                <div class="row text-muted small">
-                    <div class="col-sm-6 mb-2">
-                        <strong>Assigned To:</strong> {{ task.assignee.username if task.assigned_to else 'Unassigned' }}
-                    </div>
-                    <div class="col-sm-6 mb-2">
-                        <strong>Due Date:</strong> {{ task.due_date.strftime('%Y-%m-%d') if task.due_date else 'No due date' }}
-                    </div>
-                    <div class="col-sm-6 mb-2">
-                        <strong>Created By:</strong> {{ task.creator.username }}
-                    </div>
-                    <div class="col-sm-6 mb-2">
-                        <strong>Created At:</strong> {{ task.created_at.strftime('%Y-%m-%d') }}
-                    </div>
-                </div>
-                
-                <hr>
-                
-                <div class="d-flex align-items-center">
-                    <span class="me-3">Update Status:</span>
-                    <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-outline-secondary btn-sm {{ 'active' if task.status == 'todo' }}" onclick="updateTaskStatus('todo')">To Do</button>
-                        <button type="button" class="btn btn-outline-primary btn-sm {{ 'active' if task.status == 'in_progress' }}" onclick="updateTaskStatus('in_progress')">In Progress</button>
-                        <button type="button" class="btn btn-outline-success btn-sm {{ 'active' if task.status == 'done' }}" onclick="updateTaskStatus('done')">Done</button>
-                    </div>
-                </div>
+            {% endif %}
+        </div>
+
+        <h1 style="margin-bottom: 1.5rem;">{{ task.title }}</h1>
+        <p class="text-muted mb-4" style="font-size: 1.1rem; line-height: 1.6;">{{ task.description or 'No description provided.' }}</p>
+        
+        <div class="grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; padding: 1.5rem; background-color: var(--paper-warm); border-radius: var(--radius-md); margin-bottom: 2rem;">
+            <div>
+                <div class="text-muted small uppercase" style="letter-spacing: 0.05em; font-weight: 600; margin-bottom: 0.25rem;">Assigned To</div>
+                <div style="font-weight: 500;">{{ task.assignee.username if task.assigned_to else 'Unassigned' }}</div>
+            </div>
+            <div>
+                <div class="text-muted small uppercase" style="letter-spacing: 0.05em; font-weight: 600; margin-bottom: 0.25rem;">Due Date</div>
+                <div style="font-weight: 500;">{{ task.due_date.strftime('%B %d, %Y') if task.due_date else 'No due date' }}</div>
+            </div>
+            <div>
+                <div class="text-muted small uppercase" style="letter-spacing: 0.05em; font-weight: 600; margin-bottom: 0.25rem;">Created By</div>
+                <div style="font-weight: 500;">{{ task.creator.username }}</div>
+            </div>
+            <div>
+                <div class="text-muted small uppercase" style="letter-spacing: 0.05em; font-weight: 600; margin-bottom: 0.25rem;">Last Updated</div>
+                <div style="font-weight: 500;">{{ task.updated_at.strftime('%b %d, %H:%M') }}</div>
+            </div>
+        </div>
+
+        <div class="flex-between" style="background: var(--paper); border: 1px solid var(--border); padding: 1.5rem; border-radius: var(--radius-md);">
+            <div style="font-weight: 600;">Update Status</div>
+            <div style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-ghost {{ 'active' if task.status == 'todo' }}" onclick="updateTaskStatus('{{ task.id }}', 'todo', '{{ url_for('tasks.update_status', id=task.id) }}')" style="font-size: 0.8rem;">To Do</button>
+                <button class="btn btn-ghost {{ 'active' if task.status == 'in_progress' }}" onclick="updateTaskStatus('{{ task.id }}', 'in_progress', '{{ url_for('tasks.update_status', id=task.id) }}')" style="font-size: 0.8rem;">In Progress</button>
+                <button class="btn btn-ghost {{ 'active' if task.status == 'done' }}" onclick="updateTaskStatus('{{ task.id }}', 'done', '{{ url_for('tasks.update_status', id=task.id) }}')" style="font-size: 0.8rem;">Done</button>
             </div>
         </div>
     </div>
 </div>
 
-<script>
-function updateTaskStatus(newStatus) {
-    fetch("{{ url_for('tasks.update_status', id=task.id) }}", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ status: newStatus })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            location.reload(); // Simple way for now, will polish in Phase 6
-        } else {
-            alert(data.error || "Failed to update status");
-        }
-    })
-    .catch(error => {
-        console.error("Error:", error);
-        alert("An error occurred");
-    });
-}
-</script>
+<style>
+    .uppercase { text-transform: uppercase; }
+    .btn-ghost.active {
+        background-color: var(--ink);
+        color: var(--paper);
+        border-color: var(--ink);
+    }
+</style>
 {% endblock %}
