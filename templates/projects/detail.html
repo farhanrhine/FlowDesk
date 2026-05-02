@@ -3,117 +3,113 @@
 {% block title %}{{ project.name }} - FlowDesk{% endblock %}
 
 {% block content %}
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{{ url_for('projects.list_projects') }}">Projects</a></li>
-    <li class="breadcrumb-item active" aria-current="page">{{ project.name }}</li>
-  </ol>
-</nav>
+<header class="mb-4">
+    <div class="flex-between">
+        <div>
+            <nav style="font-size: 0.85rem; margin-bottom: 0.5rem;">
+                <a href="{{ url_for('projects.list_projects') }}" class="text-muted">Projects</a> / {{ project.name }}
+            </nav>
+            <h1>{{ project.name }}</h1>
+        </div>
+        {% if role == 'admin' %}
+            <div style="display: flex; gap: 0.5rem;">
+                <a href="{{ url_for('projects.edit', id=project.id) }}" class="btn btn-ghost">Edit</a>
+                <button class="btn btn-ghost" style="color: var(--danger); border-color: var(--danger-light);" onclick="document.getElementById('delete-dialog').showModal()">Delete</button>
+            </div>
+        {% endif %}
+    </div>
+    <p class="lead text-muted mt-4">{{ project.description or 'No description provided.' }}</p>
+</header>
 
-<div class="row">
-    <div class="col-md-8">
-        <div class="card mb-4">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-start">
-                    <h1>{{ project.name }}</h1>
-                    {% if role == 'admin' %}
+<div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+    <!-- Tasks Column -->
+    <section>
+        <div class="card">
+            <div class="flex-between mb-4">
+                <h3>Tasks</h3>
+                <a href="{{ url_for('tasks.create', project_id=project.id) }}" class="btn btn-primary" style="padding: 0.4rem 1rem; font-size: 0.8rem;">Add Task</a>
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                {% for task in project.tasks %}
+                    <a href="{{ url_for('tasks.detail', id=task.id) }}" class="flex-between" style="padding: 1rem; border: 1px solid var(--border-soft); border-radius: var(--radius-sm); transition: 0.2s;">
                         <div>
-                            <a href="{{ url_for('projects.edit', id=project.id) }}" class="btn btn-outline-secondary btn-sm">Edit</a>
-                            <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
-                        </div>
-                    {% endif %}
-                </div>
-                <p class="lead mt-3">{{ project.description or 'No description provided.' }}</p>
-                <hr>
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h3>Tasks</h3>
-                    <a href="{{ url_for('tasks.create', project_id=project.id) }}" class="btn btn-sm btn-primary">Add Task</a>
-                </div>
-                <div class="list-group">
-                    {% for task in project.tasks %}
-                        <a href="{{ url_for('tasks.detail', id=task.id) }}" class="list-group-item list-group-item-action">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1">{{ task.title }}</h5>
-                                <span class="badge bg-{{ 'success' if task.status == 'done' else 'primary' if task.status == 'in_progress' else 'secondary' }}">{{ task.status|upper }}</span>
+                            <h5 style="font-weight: 600;">{{ task.title }}</h5>
+                            <div style="display: flex; gap: 0.5rem; margin-top: 0.25rem;">
+                                <span class="badge badge-{{ task.priority }}" style="font-size: 0.65rem;">{{ task.priority }}</span>
+                                <span class="badge badge-{{ task.status }}" style="font-size: 0.65rem;">{{ task.status|replace('_', ' ') }}</span>
                             </div>
-                            <p class="mb-1 text-muted small">Due: {{ task.due_date.strftime('%Y-%m-%d') if task.due_date else 'No date' }} | Priority: {{ task.priority|capitalize }}</p>
-                        </a>
-                    {% else %}
-                        <p class="text-muted italic">No tasks created yet. Tasks will be implemented in Phase 4.</p>
-                    {% endfor %}
-                </div>
+                        </div>
+                        <div class="text-muted small" style="text-align: right;">
+                            Due: {{ task.due_date.strftime('%b %d') if task.due_date else 'No date' }}
+                        </div>
+                    </a>
+                {% else %}
+                    <p class="text-muted" style="text-align: center; padding: 3rem;">No tasks created yet.</p>
+                {% endfor %}
             </div>
         </div>
-    </div>
-    
-    <div class="col-md-4">
-        <div class="card mb-4">
-            <div class="card-header">Project Members</div>
-            <div class="card-body">
-                <ul class="list-group list-group-flush mb-3">
-                    {% for member in project.members %}
-                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                            <div>
-                                <strong>{{ member.user.username }}</strong>
-                                <br><small class="text-muted">{{ member.role.capitalize() }}</small>
-                            </div>
-                            {% if role == 'admin' and member.user_id != current_user.id %}
-                                <form action="{{ url_for('projects.remove_member', id=project.id, user_id=member.user_id) }}" method="POST" onsubmit="return confirm('Remove this member?')">
-                                    <button type="submit" class="btn btn-link text-danger btn-sm p-0">Remove</button>
-                                </form>
-                            {% endif %}
-                        </li>
-                    {% endfor %}
-                </ul>
-                
-                {% if role == 'admin' %}
-                    <h6 class="mt-4">Add Member</h6>
-                    <form action="{{ url_for('projects.add_member', id=project.id) }}" method="POST">
-                        <div class="mb-2">
-                            <input type="email" name="email" class="form-control form-control-sm" placeholder="Member email" required>
+    </section>
+
+    <!-- Members Column -->
+    <aside>
+        <div class="card">
+            <h3 class="mb-4">Members</h3>
+            <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem;">
+                {% for member in project.members %}
+                    <div class="flex-between">
+                        <div>
+                            <div style="font-weight: 600;">{{ member.user.username }}</div>
+                            <div class="text-muted" style="font-size: 0.8rem; text-transform: capitalize;">{{ member.role }}</div>
                         </div>
-                        <div class="mb-2">
-                            <select name="role" class="form-select form-select-sm">
-                                <option value="member">Member</option>
-                                <option value="admin">Admin</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-secondary btn-sm w-100">Add</button>
-                    </form>
-                {% endif %}
+                        {% if role == 'admin' and member.user_id != current_user.id %}
+                            <form action="{{ url_for('projects.remove_member', id=project.id, user_id=member.user_id) }}" method="POST">
+                                <button type="submit" class="btn" style="color: var(--danger); font-size: 0.8rem; background: none; padding: 0;">Remove</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                {% endfor %}
             </div>
+
+            {% if role == 'admin' %}
+                <hr style="border: 0; border-top: 1px solid var(--border-soft); margin-bottom: 1.5rem;">
+                <h5 class="mb-3" style="font-size: 0.9rem; font-weight: 600;">Add Member</h5>
+                <form action="{{ url_for('projects.add_member', id=project.id) }}" method="POST">
+                    <div class="form-group">
+                        <input type="email" name="email" placeholder="Email address" required style="padding: 0.4rem 0.75rem; font-size: 0.9rem;">
+                    </div>
+                    <div class="form-group">
+                        <select name="role" style="padding: 0.4rem 0.75rem; font-size: 0.9rem;">
+                            <option value="member">Member</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.5rem;">Invite</button>
+                </form>
+            {% endif %}
         </div>
-    </div>
+    </aside>
 </div>
 
-<!-- Delete Confirmation Modal -->
+<!-- Delete Dialog (HTML5 Dialog) -->
 {% if role == 'admin' %}
-<div class="modal fade" id="deleteModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Delete Project?</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <form action="{{ url_for('projects.delete', id=project.id) }}" method="POST">
-          <div class="modal-body">
-            <p>Are you sure you want to delete <strong>{{ project.name }}</strong>? This action cannot be undone.</p>
-            {% if project.tasks %}
-                <div class="form-check alert alert-warning">
-                  <input class="form-check-input" type="checkbox" name="confirm_delete_tasks" id="confirmTasks" required>
-                  <label class="form-check-label" for="confirmTasks">
-                    I understand that all {{ project.tasks|length }} associated tasks will also be deleted.
-                  </label>
-                </div>
-            {% endif %}
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-danger">Delete Project</button>
-          </div>
-      </form>
-    </div>
-  </div>
-</div>
+<dialog id="delete-dialog" class="card card-shadow" style="width: 90%; max-width: 440px; margin: auto; border: none;">
+    <h3 class="mb-4">Delete Project?</h3>
+    <p class="text-muted mb-4">Are you sure you want to delete <strong>{{ project.name }}</strong>? This will permanently remove all data and tasks.</p>
+    <form action="{{ url_for('projects.delete', id=project.id) }}" method="POST">
+        {% if project.tasks %}
+            <div class="form-group" style="background: var(--danger-light); padding: 1rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem;">
+                <label style="display: flex; align-items: flex-start; gap: 0.5rem; color: var(--danger);">
+                    <input type="checkbox" name="confirm_delete_tasks" required style="width: auto; margin-top: 0.25rem;">
+                    <span>I understand all {{ project.tasks|length }} tasks will be deleted.</span>
+                </label>
+            </div>
+        {% endif %}
+        <div class="flex-between" style="gap: 1rem;">
+            <button type="button" class="btn btn-ghost" style="flex: 1;" onclick="this.closest('dialog').close()">Cancel</button>
+            <button type="submit" class="btn btn-danger" style="flex: 1;">Delete</button>
+        </div>
+    </form>
+</dialog>
 {% endif %}
 {% endblock %}
