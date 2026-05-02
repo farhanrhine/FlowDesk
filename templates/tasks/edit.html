@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Task - {{ task.title }}{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ url_for('projects.list_projects') }}">Projects</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('projects.detail', id=task.project.id) }}">{{ task.project.name }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('tasks.detail', id=task.id) }}">{{ task.title }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Edit</li>
+  </ol>
+</nav>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">Edit Task Details</div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Task Title</label>
+                        <input type="text" class="form-control" id="title" name="title" value="{{ task.title }}" required minlength="3" maxlength="200">
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="4">{{ task.description }}</textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="priority" class="form-label">Priority</label>
+                            <select name="priority" id="priority" class="form-select">
+                                <option value="low" {{ 'selected' if task.priority == 'low' }}>Low</option>
+                                <option value="medium" {{ 'selected' if task.priority == 'medium' }}>Medium</option>
+                                <option value="high" {{ 'selected' if task.priority == 'high' }}>High</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="status" class="form-label">Status</label>
+                            <select name="status" id="status" class="form-select">
+                                <option value="todo" {{ 'selected' if task.status == 'todo' }}>To Do</option>
+                                <option value="in_progress" {{ 'selected' if task.status == 'in_progress' }}>In Progress</option>
+                                <option value="done" {{ 'selected' if task.status == 'done' }}>Done</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="due_date" class="form-label">Due Date</label>
+                            <input type="date" class="form-control" id="due_date" name="due_date" value="{{ task.due_date.strftime('%Y-%m-%d') if task.due_date else '' }}">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="assigned_to" class="form-label">Assigned To</label>
+                        {% if role == 'admin' %}
+                            <select name="assigned_to" id="assigned_to" class="form-select">
+                                <option value="">Unassigned</option>
+                                {% for member in task.project.members %}
+                                    <option value="{{ member.user.id }}" {{ 'selected' if task.assigned_to == member.user.id }}>{{ member.user.username }}</option>
+                                {% endfor %}
+                            </select>
+                        {% else %}
+                            <input type="text" class="form-control" value="{{ task.assignee.username if task.assigned_to else 'Unassigned' }}" readonly disabled>
+                            <input type="hidden" name="assigned_to" value="{{ task.assigned_to or '' }}">
+                            <div class="form-text">Only project admins can change task assignment.</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('tasks.detail', id=task.id) }}" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

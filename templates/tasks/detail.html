@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}{{ task.title }} - FlowDesk{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ url_for('projects.list_projects') }}">Projects</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('projects.detail', id=task.project.id) }}">{{ task.project.name }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ task.title }}</li>
+  </ol>
+</nav>
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <span class="badge bg-{{ 'danger' if task.priority == 'high' else 'warning' if task.priority == 'medium' else 'info' }} mb-2">
+                            {{ task.priority|upper }}
+                        </span>
+                        <span class="badge bg-{{ 'success' if task.status == 'done' else 'primary' if task.status == 'in_progress' else 'secondary' }} mb-2 ms-2" id="statusBadge">
+                            {{ task.status|replace('_', ' ')|upper }}
+                        </span>
+                        <h1>{{ task.title }}</h1>
+                    </div>
+                    {% if role == 'admin' or task.created_by == current_user.id %}
+                        <div>
+                            <a href="{{ url_for('tasks.edit', id=task.id) }}" class="btn btn-outline-secondary btn-sm">Edit</a>
+                            {% if role == 'admin' %}
+                                <form action="{{ url_for('tasks.delete', id=task.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this task?')">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <p class="lead">{{ task.description or 'No description provided.' }}</p>
+                <hr>
+                
+                <div class="row text-muted small">
+                    <div class="col-sm-6 mb-2">
+                        <strong>Assigned To:</strong> {{ task.assignee.username if task.assigned_to else 'Unassigned' }}
+                    </div>
+                    <div class="col-sm-6 mb-2">
+                        <strong>Due Date:</strong> {{ task.due_date.strftime('%Y-%m-%d') if task.due_date else 'No due date' }}
+                    </div>
+                    <div class="col-sm-6 mb-2">
+                        <strong>Created By:</strong> {{ task.creator.username }}
+                    </div>
+                    <div class="col-sm-6 mb-2">
+                        <strong>Created At:</strong> {{ task.created_at.strftime('%Y-%m-%d') }}
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <div class="d-flex align-items-center">
+                    <span class="me-3">Update Status:</span>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-secondary btn-sm {{ 'active' if task.status == 'todo' }}" onclick="updateTaskStatus('todo')">To Do</button>
+                        <button type="button" class="btn btn-outline-primary btn-sm {{ 'active' if task.status == 'in_progress' }}" onclick="updateTaskStatus('in_progress')">In Progress</button>
+                        <button type="button" class="btn btn-outline-success btn-sm {{ 'active' if task.status == 'done' }}" onclick="updateTaskStatus('done')">Done</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function updateTaskStatus(newStatus) {
+    fetch("{{ url_for('tasks.update_status', id=task.id) }}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: newStatus })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload(); // Simple way for now, will polish in Phase 6
+        } else {
+            alert(data.error || "Failed to update status");
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred");
+    });
+}
+</script>
+{% endblock %}

@@ -27,17 +27,17 @@
                 <hr>
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h3>Tasks</h3>
-                    <a href="{{ url_for('tasks.create', project_id=project.id) if 'tasks' in config.get('BLUEPRINTS', []) else '#' }}" class="btn btn-sm btn-primary">Add Task</a>
+                    <a href="{{ url_for('tasks.create', project_id=project.id) }}" class="btn btn-sm btn-primary">Add Task</a>
                 </div>
                 <div class="list-group">
                     {% for task in project.tasks %}
-                        <div class="list-group-item">
+                        <a href="{{ url_for('tasks.detail', id=task.id) }}" class="list-group-item list-group-item-action">
                             <div class="d-flex w-100 justify-content-between">
                                 <h5 class="mb-1">{{ task.title }}</h5>
-                                <span class="badge bg-secondary">{{ task.status }}</span>
+                                <span class="badge bg-{{ 'success' if task.status == 'done' else 'primary' if task.status == 'in_progress' else 'secondary' }}">{{ task.status|upper }}</span>
                             </div>
-                            <p class="mb-1 text-muted small">Due: {{ task.due_date or 'No date' }}</p>
-                        </div>
+                            <p class="mb-1 text-muted small">Due: {{ task.due_date.strftime('%Y-%m-%d') if task.due_date else 'No date' }} | Priority: {{ task.priority|capitalize }}</p>
+                        </a>
                     {% else %}
                         <p class="text-muted italic">No tasks created yet. Tasks will be implemented in Phase 4.</p>
                     {% endfor %}
