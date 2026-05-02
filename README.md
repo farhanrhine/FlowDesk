@@ -21,40 +21,6 @@ FlowDesk is a clean, modern, and high-performance task management application bu
 - **Package Manager**: [uv](https://github.com/astral-sh/uv)
 - **Deployment**: Railway
 
-## 🎨 Application Workflow
-
-```mermaid
-graph TD
-    subgraph Auth ["🔐 Authentication"]
-        A[User Registers] --> B[User Logs In]
-    end
-
-    subgraph Project ["📂 Project Setup"]
-        B --> C[Create Project]
-        C --> D[Add Team Members]
-        D -- Admin Role --> E[Project Settings]
-        D -- Member Role --> F[Project View]
-    end
-
-    subgraph Tasks ["📝 Task Management"]
-        E --> G[Create/Assign Tasks]
-        F --> H[View Assigned Tasks]
-        G --> I[Dashboard Overview]
-        H --> I
-    end
-
-    subgraph Updates ["🔄 Lifecycle"]
-        I --> J{Permission Check}
-        J -- Assigned User/Admin --> K[Update Task Status]
-        J -- Unauthorized --> L[Access Denied]
-    end
-
-    style A fill:#E3F2FD,stroke:#1565C0,stroke-width:2px,color:#1565C0
-    style C fill:#FFF8E1,stroke:#9A6830,stroke-width:2px,color:#9A6830
-    style G fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px,color:#2E7D32
-    style K fill:#F3E5F5,stroke:#7B1FA2,stroke-width:2px,color:#7B1FA2
-    style L fill:#FFEBEE,stroke:#C62828,stroke-width:2px,color:#C62828
-```
 
 ## 📁 Project Structure
 
@@ -96,7 +62,7 @@ FlowDesk/
 
 ## 🧪 Demo Credentials
 
-If you want to test the application immediately with pre-populated data (multiple projects, tasks, and overdue metrics), use the following account:
+If you want to test the application immediately with pre-populated data (multiple projects, tasks, and overdue metrics), use the following account (local only sqlite):
 
 *   **Email:** `tester@example.com`
 *   **Password:** `password123`
@@ -105,35 +71,41 @@ If you want to test the application immediately with pre-populated data (multipl
 
 ## 🧪 End-to-End Testing Guide (Walkthrough)
 
-To verify all features, follow this exact sequence:
+To verify all features and edge cases, follow this exact sequence:
+
+### 🚀 Key Features to Test
+- **Authentication**: Secure Signup, Login, and Password Protection.
+- **Project & Team Management**: Creating projects and inviting members with specific roles.
+- **Task Lifecycle**: Creation, assignment, and real-time status transitions.
+- **Dashboard Metrics**: Real-time summary of active, pending, and overdue work.
+
+---
 
 ### Step 1: Account Setup
 1.  Navigate to `/auth/register`.
 2.  Create account: **Username:** `farhan`, **Email:** `farhan@example.com`, **Password:** `password123`.
 3.  Log in and verify the Dashboard says "Welcome, farhan".
 
-### Step 2: Real-World Use Case: Website Redesign
+### Step 2: Project Creation
 1.  Click **Projects** in the navbar -> **New Project**.
-2.  **Name:** `EcoStore Web Redesign`, **Description:** `Updating the e-commerce site with a modern, sustainable aesthetic.`.
+2.  **Name:** `EcoStore Web Redesign`, **Description:** `Updating the e-commerce site with a modern aesthetic.`.
 3.  Click **Create Project**.
 
-### Step 3: Collaborate with a Designer
-1.  Open an **Incognito Window** and register a designer user: `designer@studio.com`.
-2.  Back in your `farhan` window, on the "EcoStore Web Redesign" page, find the **Add Member** form.
-3.  Enter `designer@studio.com`, select **Member**, and click **Invite**.
-4.  Verify the designer now appears in the project team.
+### Step 3: Team Collaboration & RBAC (Edge Case)
+1.  Open an **Incognito Window** and register a designer: `designer@studio.com`.
+2.  In your `farhan` window, go to the project and **Invite** `designer@studio.com` as a **Member**.
+3.  **Edge Case Test**: In the `designer` window, try to access the **Project Settings**. Verify that access is denied because only **Admins** can manage settings.
 
-### Step 4: Sprint Planning (Multiple Tasks)
+### Step 4: Sprint Planning & Status Updates
 1.  Click **Add Task**.
-2.  **Title:** `Homepage Wireframes`, **Description:** `Create low-fidelity wireframes focusing on the new hero section.`, **Due Date:** *Today's Date*, **Assigned To:** `farhan`.
-3.  Click **Create Task**.
-4.  Add another task: **Title:** `SEO Audit`, **Description:** `Check current meta tags and keyword density.`, **Due Date:** *Tomorrow's Date*, **Assigned To:** `farhan`.
-5.  Click on **Homepage Wireframes** and click the **In Progress** button to show the team you've started.
+2.  **Title:** `Homepage Wireframes`, **Assigned To:** `farhan`, **Due Date:** *Today*.
+3.  Add another task: **Title:** `SEO Audit`, **Due Date:** *Yesterday* (to test the **Overdue** edge case).
+4.  Click on a task and change status to **In Progress**. Verify the badge color updates instantly.
 
-### Step 5: Dashboard Overview
+### Step 5: Dashboard & Dark Mode
 1.  Click **Dashboard** in the navbar.
-2.  Verify the metrics show your active work on the **EcoStore** project.
-3.  Toggle the **Dark Mode** icon to see how the "Editorial Parchment" theme adapts to late-night design sessions.
+2.  Verify the metrics show **1 Overdue** task and your active work.
+3.  Toggle **Dark Mode** to see the high-contrast "Parchment" UI adapt to the environment.
 
 ## 🌍 Deployment (Railway)
 
