@@ -85,12 +85,8 @@ dependencies = [
     { name = "flask-sqlalchemy" },
     { name = "gunicorn" },
     { name = "psycopg2-binary" },
-    { name = "werkzeug" },
-]
-
-[package.dev-dependencies]
-dev = [
     { name = "python-dotenv" },
+    { name = "werkzeug" },
 ]
 
 [package.metadata]
@@ -100,11 +96,12 @@ requires-dist = [
     { name = "flask-sqlalchemy", specifier = ">=3.1.1" },
     { name = "gunicorn", specifier = ">=25.3.0" },
     { name = "psycopg2-binary", specifier = ">=2.9.12" },
+    { name = "python-dotenv", specifier = ">=1.2.2" },
     { name = "werkzeug", specifier = ">=3.1.8" },
 ]
 
 [package.metadata.requires-dev]
-dev = [{ name = "python-dotenv", specifier = ">=1.2.2" }]
+dev = []
 
 [[package]]
 name = "greenlet"
