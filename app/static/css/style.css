@@ -275,11 +275,11 @@ input:focus, select:focus, textarea:focus {
     text-transform: uppercase;
 }
 
-.badge-low { background-color: #f0f0f0; color: var(--ink-muted); }
+.badge-low { background-color: #e8e6df; color: var(--ink-soft); }
 .badge-medium { background-color: #fff8e1; color: #b8860b; }
 .badge-high { background-color: var(--accent-light); color: var(--accent); }
 
-.badge-todo { background-color: #f0f0f0; color: var(--ink-muted); }
+.badge-todo { background-color: #e8e6df; color: var(--ink-soft); }
 .badge-in_progress { background-color: #e8f4fd; color: #1a6fa8; }
 .badge-done { background-color: #e8f5e9; color: #2e7d32; }
 
