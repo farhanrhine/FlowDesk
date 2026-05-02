@@ -21,6 +21,58 @@ FlowDesk is a clean, modern, and high-performance task management application bu
 - **Package Manager**: [uv](https://github.com/astral-sh/uv)
 - **Deployment**: Railway
 
+## 🎨 Application Workflow
+
+```mermaid
+graph TD
+    subgraph Auth ["🔐 Authentication"]
+        A[User Registers] --> B[User Logs In]
+    end
+
+    subgraph Project ["📂 Project Setup"]
+        B --> C[Create Project]
+        C --> D[Add Team Members]
+        D -- Admin Role --> E[Project Settings]
+        D -- Member Role --> F[Project View]
+    end
+
+    subgraph Tasks ["📝 Task Management"]
+        E --> G[Create/Assign Tasks]
+        F --> H[View Assigned Tasks]
+        G --> I[Dashboard Overview]
+        H --> I
+    end
+
+    subgraph Updates ["🔄 Lifecycle"]
+        I --> J{Permission Check}
+        J -- Assigned User/Admin --> K[Update Task Status]
+        J -- Unauthorized --> L[Access Denied]
+    end
+
+    style A fill:#E3F2FD,stroke:#1565C0,stroke-width:2px
+    style C fill:#FFF8E1,stroke:#9A6830,stroke-width:2px
+    style G fill:#E8F5E9,stroke:#2E7D32,stroke-width:2px
+    style K fill:#F3E5F5,stroke:#7B1FA2,stroke-width:2px
+    style L fill:#FFEBEE,stroke:#C62828,stroke-width:2px
+```
+
+## 📁 Project Structure
+
+```text
+FlowDesk/
+├── app/
+│   ├── auth/           # Authentication blueprints & logic
+│   ├── dashboard/      # Personalized metrics & team activity
+│   ├── projects/       # Project creation & member management
+│   ├── tasks/          # Task lifecycle & status updates
+│   ├── static/         # Custom CSS & Vanilla JS
+│   ├── templates/      # Jinja2 HTML layouts
+│   └── models.py       # Database schema (User, Project, Task)
+├── main.py             # Application entry point
+├── Procfile            # Deployment instructions for Railway
+└── pyproject.toml      # Dependency management (uv)
+```
+
 ## 💻 Local Setup
 
 1. **Clone the repository**:
@@ -83,11 +135,20 @@ To verify all features, follow this exact sequence:
 2.  Verify the metrics show your active work on the **EcoStore** project.
 3.  Toggle the **Dark Mode** icon to see how the "Editorial Parchment" theme adapts to late-night design sessions.
 
-## 🌍 Environment Variables
-- `SECRET_KEY`: A secret key for session encryption.
-- `DATABASE_URL`: Connection string for the database (SQLite by default).
-- `FLASK_APP`: Set to `main.py`.
-- `FLASK_ENV`: `development` or `production`.
+## 🌍 Deployment (Railway)
+
+To deploy FlowDesk to [Railway](https://railway.app), follow these steps:
+
+1.  **Connect GitHub**: Create a new project on Railway and connect your GitHub repository.
+2.  **Add PostgreSQL**: (Optional but recommended) In your Railway project, click **+ Add** and select **Database > PostgreSQL**.
+3.  **Environment Variables**: Go to the **Variables** tab of your service and add the following:
+    - `FLASK_APP`: `main.py`
+    - `DATABASE_URL`: (Automatically provided by Railway if you added PostgreSQL)
+    - `SECRET_KEY`: Generate a random string.
+    - `FLASK_ENV`: `production`
+4.  **Database Migration**: Once deployed, use the Railway CLI or a migration script to initialize the production database tables.
+5.  **Build Command**: Railway will automatically detect the `pyproject.toml` and use `uv` to build the app. The `Procfile` ensures it runs with `gunicorn`.
+
 
 ## 📜 License
 MIT

@@ -34,6 +34,15 @@
     --font-display: 'DM Serif Display', Georgia, serif;
     --font-body: 'DM Sans', system-ui, sans-serif;
 
+    --badge-low-bg: #E8E6DF;
+    --badge-low-text: #6B6357;
+    --badge-me-bg: #8E8A85;
+    --badge-me-text: #FFFFFF;
+    --badge-user-bg: #F5F5F0;
+    --badge-user-text: #7A6E63;
+    --badge-medium-bg: #FFF8E1;
+    --badge-medium-text: #9A6830;
+
     /* Sizing */
     --max-width: 1200px;
     --auth-width: 440px;
@@ -64,6 +73,15 @@
     --info-light: #1a2733;
     --warning: #ffd54f;
     --warning-light: #332b1a;
+
+    --badge-low-bg: #3D3A36;
+    --badge-low-text: #D4D1CA;
+    --badge-me-bg: #5D5A56;
+    --badge-me-text: #F2F0EB;
+    --badge-user-bg: #2D2A28;
+    --badge-user-text: #A3A099;
+    --badge-medium-bg: #3E2723;
+    --badge-medium-text: #FFB74D;
 }
 
 /* Base Styles */
@@ -264,24 +282,30 @@ input:focus, select:focus, textarea:focus {
     color: var(--ink-faint);
 }
 
-/* Badges */
-.badge {
-    display: inline-block;
-    padding: 0.35rem 0.85rem;
-    border-radius: 999px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+/* Shared badge base */
+.badge { 
+    display: inline-block; 
+    font-size: 11px; 
+    font-weight: 600; 
+    letter-spacing: 0.06em; 
+    padding: 4px 11px; 
+    border-radius: 999px; 
+    text-transform: uppercase; 
 }
 
-.badge-low { background-color: #e8e6df; color: var(--ink-soft); }
-.badge-medium { background-color: #fff8e1; color: #b8860b; }
-.badge-high { background-color: var(--accent-light); color: var(--accent); }
+/* User / assigned-to badges */
+.badge-user { background: var(--badge-user-bg); color: var(--badge-user-text); }
+.badge-me   { background: var(--badge-me-bg); color: var(--badge-me-text); }
 
-.badge-todo { background-color: #e8e6df; color: var(--ink-soft); }
-.badge-in_progress { background-color: #e8f4fd; color: #1a6fa8; }
-.badge-done { background-color: #e8f5e9; color: #2e7d32; }
+/* Priority badges */
+.badge-high     { background: #FAEAEA; color: #B83232; }
+.badge-medium   { background: var(--badge-medium-bg); color: var(--badge-medium-text); }
+.badge-low      { background: var(--badge-low-bg); color: var(--badge-low-text); }
+
+/* Status badges */
+.badge-todo        { background: var(--badge-low-bg); color: var(--badge-low-text); }
+.badge-in-progress { background: #F5EDE8; color: #CC785C; }
+.badge-done        { background: #E8F0EB; color: #3A7A52; }
 
 /* Flash Messages */
 .alert {

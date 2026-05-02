@@ -16,7 +16,7 @@
         <div class="flex-between mb-4">
             <div style="display: flex; gap: 0.75rem; align-items: center;">
                 <span class="badge badge-{{ task.priority }}">{{ task.priority }}</span>
-                <span class="badge badge-{{ task.status }}">{{ task.status|replace('_', ' ') }}</span>
+                <span class="badge badge-{{ task.status | replace('_', '-') }}">{{ task.status | replace('_', ' ') }}</span>
             </div>
             {% if role == 'admin' or task.created_by == current_user.id %}
                 <div style="display: flex; gap: 0.5rem;">
@@ -36,7 +36,13 @@
         <div class="grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; padding: 1.5rem; background-color: var(--paper-warm); border-radius: var(--radius-md); margin-bottom: 2rem;">
             <div>
                 <div class="text-muted small uppercase" style="letter-spacing: 0.05em; font-weight: 600; margin-bottom: 0.25rem;">Assigned To</div>
-                <div style="font-weight: 500;">{{ task.assignee.username if task.assigned_to else 'Unassigned' }}</div>
+                <div style="font-weight: 500;">
+                    {% if task.assigned_to %}
+                        <span class="badge {{ 'badge-me' if task.assigned_to == current_user.id else 'badge-user' }}">{{ task.assignee.username }}</span>
+                    {% else %}
+                        Unassigned
+                    {% endif %}
+                </div>
             </div>
             <div>
                 <div class="text-muted small uppercase" style="letter-spacing: 0.05em; font-weight: 600; margin-bottom: 0.25rem;">Due Date</div>

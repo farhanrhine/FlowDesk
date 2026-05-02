@@ -36,8 +36,8 @@
                         <div>
                             <h5 style="font-weight: 600;">{{ task.title }}</h5>
                             <div style="display: flex; gap: 0.5rem; margin-top: 0.25rem;">
-                                <span class="badge badge-{{ task.priority }}" style="font-size: 0.65rem;">{{ task.priority }}</span>
-                                <span class="badge badge-{{ task.status }}" style="font-size: 0.65rem;">{{ task.status|replace('_', ' ') }}</span>
+                                <span class="badge badge-{{ task.priority }}">{{ task.priority }}</span>
+                                <span class="badge badge-{{ task.status | replace('_', '-') }}">{{ task.status | replace('_', ' ') }}</span>
                             </div>
                         </div>
                         <div class="text-muted small" style="text-align: right;">
