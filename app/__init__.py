@@ -34,15 +34,11 @@ def create_app(config_class=None):
         # Create database tables for our models
         db.create_all()
     
-    # Register blueprints (will be added in later phases)
-    # from app.auth.routes import auth
-    # from app.projects.routes import projects
-    # from app.tasks.routes import tasks
-    # from app.dashboard.routes import dashboard
+    # Register blueprints
+    from app.auth import auth
+    from app.dashboard import dashboard
     
-    # app.register_blueprint(auth)
-    # app.register_blueprint(projects)
-    # app.register_blueprint(tasks)
-    # app.register_blueprint(dashboard)
+    app.register_blueprint(auth, url_prefix='/auth')
+    app.register_blueprint(dashboard)
     
     return app
