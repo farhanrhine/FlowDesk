@@ -37,10 +37,12 @@ def create_app(config_class=None):
     # Register blueprints
     from app.auth import auth
     from app.projects import projects
+    from app.tasks import tasks
     from app.dashboard import dashboard
     
     app.register_blueprint(auth, url_prefix='/auth')
     app.register_blueprint(projects, url_prefix='/projects')
+    app.register_blueprint(tasks, url_prefix='/tasks')
     app.register_blueprint(dashboard)
     
     return app
