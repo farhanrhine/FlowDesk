@@ -3,7 +3,7 @@
 FlowDesk is a clean, modern, and high-performance task management application built with Flask and Vanilla CSS. It features a stunning "Editorial Parchment" design language with full dark mode support, role-based access control, and a dynamic dashboard.
 
 ## 🚀 Live URL
-[https://flowdesk-production.up.railway.app](https://flowdesk-production.up.railway.app)
+[https://flowdesk.up.railway.app](https://flowdesk.up.railway.app)
 
 ## ✨ Features
 - **Authentication**: Secure signup/login/logout with Flask-Login and Werkzeug hashing.
