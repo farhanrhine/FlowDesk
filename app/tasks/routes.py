@@ -33,7 +33,7 @@ def create():
         # Validations
         if not title or len(title) < 3 or len(title) > 200:
             flash('Title must be between 3 and 200 characters.', 'danger')
-            return render_template('tasks/create.html', project=project)
+            return render_template('tasks/create.html', project=project, role=role)
             
         due_date = None
         if due_date_str:
@@ -41,10 +41,10 @@ def create():
                 due_date = datetime.strptime(due_date_str, '%Y-%m-%d').date()
                 if due_date < date.today():
                     flash('Due date cannot be in the past.', 'danger')
-                    return render_template('tasks/create.html', project=project)
+                    return render_template('tasks/create.html', project=project, role=role)
             except ValueError:
                 flash('Invalid date format.', 'danger')
-                return render_template('tasks/create.html', project=project)
+                return render_template('tasks/create.html', project=project, role=role)
         
         # Assignment logic
         if assigned_to_id:
@@ -52,12 +52,12 @@ def create():
             is_member = ProjectMember.query.filter_by(project_id=project_id, user_id=assigned_to_id).first()
             if not is_member:
                 flash('Assigned user must be a member of the project.', 'danger')
-                return render_template('tasks/create.html', project=project)
+                return render_template('tasks/create.html', project=project, role=role)
                 
             # RBAC for assignment
             if role != 'admin' and assigned_to_id != current_user.id:
                 flash('Members can only assign tasks to themselves.', 'danger')
-                return render_template('tasks/create.html', project=project)
+                return render_template('tasks/create.html', project=project, role=role)
         
         new_task = Task(
             title=title,
@@ -74,7 +74,7 @@ def create():
         flash('Task created successfully!', 'success')
         return redirect(url_for('projects.detail', id=project_id))
         
-    return render_template('tasks/create.html', project=project)
+    return render_template('tasks/create.html', project=project, role=role)
 
 @tasks.route('/<int:id>')
 @login_required
@@ -112,14 +112,14 @@ def edit(id):
         
         if not title or len(title) < 3 or len(title) > 200:
             flash('Title must be between 3 and 200 characters.', 'danger')
-            return render_template('tasks/edit.html', task=task)
+            return render_template('tasks/edit.html', task=task, role=role)
             
         if due_date_str:
             try:
                 task.due_date = datetime.strptime(due_date_str, '%Y-%m-%d').date()
             except ValueError:
                 flash('Invalid date format.', 'danger')
-                return render_template('tasks/edit.html', task=task)
+                return render_template('tasks/edit.html', task=task, role=role)
         else:
             task.due_date = None
             
@@ -143,7 +143,7 @@ def edit(id):
         flash('Task updated successfully.', 'success')
         return redirect(url_for('tasks.detail', id=id))
         
-    return render_template('tasks/edit.html', task=task)
+    return render_template('tasks/edit.html', task=task, role=role)
 
 @tasks.route('/<int:id>/delete', methods=['POST'])
 @login_required

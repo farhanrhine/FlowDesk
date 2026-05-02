@@ -25,6 +25,18 @@ document.addEventListener('DOMContentLoaded', () => {
         themeBtn.addEventListener('click', toggleTheme);
     }
 
+    // 2. Password Visibility Toggle
+    const passwordInput = document.getElementById('password');
+    const togglePasswordBtn = document.getElementById('toggle-password');
+    
+    if (passwordInput && togglePasswordBtn) {
+        togglePasswordBtn.addEventListener('click', () => {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            togglePasswordBtn.textContent = type === 'password' ? 'Show' : 'Hide';
+        });
+    }
+
     // Initialize theme
     initTheme();
 
