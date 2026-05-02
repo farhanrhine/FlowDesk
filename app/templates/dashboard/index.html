@@ -88,7 +88,8 @@
             </thead>
             <tbody>
                 {% for task in all_my_tasks %}
-                    <tr class="task-row" data-status="{{ task.status }}" style="border-bottom: 1px solid var(--border-soft);">
+                    {% set is_mine = task.assigned_to == current_user.id %}
+                    <tr class="task-row" data-status="{{ task.status }}" style="border-bottom: 1px solid var(--border-soft); {% if is_mine %}background-color: var(--paper-warm);{% endif %}">
                         <td style="padding: 1rem;">
                             <a href="{{ url_for('tasks.detail', id=task.id) }}" style="color: var(--ink); font-weight: 600;">
                                 {{ task.title }}
@@ -96,7 +97,10 @@
                         </td>
                         <td style="padding: 1rem; font-size: 0.9rem;">{{ task.project.name }}</td>
                         <td style="padding: 1rem; font-size: 0.9rem;">
-                            <span style="font-weight: 500;">{{ task.assignee.username if task.assigned_to else 'Unassigned' }}</span>
+                            <span style="font-weight: 500; color: {% if is_mine %}var(--accent){% else %}var(--ink){% endif %};">
+                                {{ task.assignee.username if task.assigned_to else 'Unassigned' }}
+                                {% if is_mine %}<small style="opacity: 0.7; font-size: 0.7rem; margin-left: 0.25rem;">(Me)</small>{% endif %}
+                            </span>
                         </td>
                         <td style="padding: 1rem;">
                             <span class="badge badge-{{ task.priority }}">{{ task.priority }}</span>
