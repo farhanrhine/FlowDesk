@@ -65,7 +65,7 @@
 <!-- All My Tasks Table -->
 <div class="card">
     <div class="flex-between mb-4">
-        <h3>All My Tasks</h3>
+        <h3>Team Activity</h3>
         <div style="display: flex; gap: 0.5rem;">
             <button class="btn btn-ghost filter-btn active" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="filterTasks('all')">All</button>
             <button class="btn btn-ghost filter-btn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="filterTasks('todo')">To Do</button>
@@ -80,6 +80,7 @@
                 <tr style="border-bottom: 1px solid var(--border); color: var(--ink-muted); font-size: 0.85rem;">
                     <th style="padding: 1rem;">Title</th>
                     <th style="padding: 1rem;">Project</th>
+                    <th style="padding: 1rem;">Assigned To</th>
                     <th style="padding: 1rem;">Priority</th>
                     <th style="padding: 1rem;">Due Date</th>
                     <th style="padding: 1rem;">Status</th>
@@ -94,6 +95,9 @@
                             </a>
                         </td>
                         <td style="padding: 1rem; font-size: 0.9rem;">{{ task.project.name }}</td>
+                        <td style="padding: 1rem; font-size: 0.9rem;">
+                            <span style="font-weight: 500;">{{ task.assignee.username if task.assigned_to else 'Unassigned' }}</span>
+                        </td>
                         <td style="padding: 1rem;">
                             <span class="badge badge-{{ task.priority }}">{{ task.priority }}</span>
                         </td>
@@ -104,7 +108,7 @@
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="5" style="text-align: center; padding: 3rem; color: var(--ink-faint);">You have no tasks assigned.</td>
+                        <td colspan="6" style="text-align: center; padding: 3rem; color: var(--ink-faint);">No team activity found in your projects.</td>
                     </tr>
                 {% endfor %}
             </tbody>

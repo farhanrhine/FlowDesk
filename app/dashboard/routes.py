@@ -31,13 +31,14 @@ def index():
         and_(Task.assigned_to == current_user.id, Task.due_date < today, Task.status != 'done')
     ).all()
     
-    # All My Tasks: Full list with project name, status, etc.
-    all_my_tasks = Task.query.filter_by(assigned_to=current_user.id).order_by(Task.due_date.asc().nullslast()).all()
+    # 4. Team Tasks: All tasks in projects the user is a member of
+    user_project_ids = [m.project_id for m in current_user.project_memberships]
+    team_tasks = Task.query.filter(Task.project_id.in_(user_project_ids)).order_by(Task.due_date.asc().nullslast()).all()
     
     return render_template(
         'dashboard/index.html',
         tasks_today=tasks_today,
         in_progress_count=in_progress_count,
         overdue_tasks=overdue_tasks,
-        all_my_tasks=all_my_tasks
+        all_my_tasks=team_tasks
     )
