@@ -1,6 +1,6 @@
 # FlowDesk
 
-FlowDesk is a clean, modern, and high-performance task management application built with Flask and Vanilla CSS. It features a stunning "Editorial Parchment" design language with full dark mode support, role-based access control, and a dynamic dashboard.
+FlowDesk is a **minimalist, high-performance task management application** built with a **Zero-Framework Frontend philosophy** (Pure HTML, CSS, and Vanilla JS) and a robust Flask backend. It features a stunning "Editorial Parchment" design language with full dark mode support, role-based access control, and a dynamic dashboard.
 
 ## 🚀 Live URL
 [https://flowdesk.up.railway.app](https://flowdesk.up.railway.app)
@@ -15,11 +15,13 @@ FlowDesk is a clean, modern, and high-performance task management application bu
 - **Dark Mode**: Native dark mode support with localStorage persistence.
 
 ## 🛠️ Tech Stack
-- **Backend**: Flask, SQLAlchemy (ORM)
-- **Database**: SQLite (Local), PostgreSQL (Production)
-- **Frontend**: Vanilla CSS (Custom Design System), Vanilla JS, Jinja2
-- **Package Manager**: [uv](https://github.com/astral-sh/uv)
-- **Deployment**: Railway
+- **Backend**: **Flask (Python)** — A monolithic engine handling Server-Side Rendering (SSR) via Jinja2 and lightweight JSON APIs.
+- **Database**: SQLite (Development) and **PostgreSQL (Production)** via SQLAlchemy ORM.
+- **Frontend**: **The Pure Vanilla Stack** — Zero frameworks for maximum performance and design control.
+  - **No CSS Frameworks**: 100% custom design system using modern CSS Variables, Flexbox, and Grid.
+  - **No JS Frameworks**: Zero-dependency Vanilla JavaScript for all DOM interactions and async updates.
+- **Package Manager**: [uv](https://github.com/astral-sh/uv) (Next-generation Python packaging).
+- **Deployment**: Railway (Automated CI/CD).
 
 
 ## 📁 Project Structure
